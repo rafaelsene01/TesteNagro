@@ -8,7 +8,7 @@ const routes = new Router();
 routes.get('/grower', PessoaController.index);
 routes.post('/grower', PessoaController.store);
 
-routes.get('/properties/:id', ImovelController.index);
-routes.post('/properties/:id', ImovelController.store);
+routes.get('/properties', ImovelController.index);
+routes.post('/properties', ImovelController.store);
 
 export default routes;

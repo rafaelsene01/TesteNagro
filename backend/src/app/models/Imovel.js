@@ -8,14 +8,14 @@ class Imovel extends Model {
         city: Sequelize.STRING,
         total_area: Sequelize.NUMBER,
       },
-      { sequelize }
+      { sequelize, modelName: 'imoveis' }
     );
 
     return this;
   }
 
   static associate(models) {
-    this.belongsTo(models.Pessoa, { foreignKey: 'growerId', as: 'pessoa' });
+    this.belongsTo(models.Pessoa, { foreignKey: 'grower_id', as: 'pessoa' });
   }
 }
 

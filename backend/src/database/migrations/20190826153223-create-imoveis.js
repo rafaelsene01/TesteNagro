@@ -19,7 +19,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      growerId: {
+      grower_id: {
         type: Sequelize.INTEGER,
         references: { model: 'pessoas', key: 'id' },
         onUpdate: 'CASCADE',
