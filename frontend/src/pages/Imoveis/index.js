@@ -15,11 +15,12 @@ export default function Imoveis({ location }) {
 
   useEffect(() => {
     async function getImoveis() {
-      const response = await api.get('properties', {
-        params: { growerId: id },
-      });
-
-      setImoveis(response.data);
+      try {
+        const response = await api.get('properties', {
+          params: { growerId: id },
+        });
+        setImoveis(response.data);
+      } catch (error) {}
     }
 
     getImoveis();
@@ -27,15 +28,17 @@ export default function Imoveis({ location }) {
 
   async function handleSubmit(name, city, total_area) {
     setLoading(true);
-    const response = await api.post('properties', {
-      name,
-      city,
-      total_area,
-      growerId: id,
-    });
-    setImoveis(
-      imoveis.length >= 1 ? [response.data, ...imoveis] : [response.data]
-    );
+    try {
+      const response = await api.post('properties', {
+        name,
+        city,
+        total_area,
+        growerId: id,
+      });
+      setImoveis(
+        imoveis.length >= 1 ? [response.data, ...imoveis] : [response.data]
+      );
+    } catch (error) {}
     setLoading(false);
   }
 

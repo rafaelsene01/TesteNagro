@@ -6,7 +6,7 @@ import { Container } from './styles';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('Nome obrigatorio'),
-  cpf: Yup.number().required('CPF obrigatorio'),
+  cpf: Yup.string().required('CPF obrigatorio'),
 });
 
 export default function Add({ loading, handleSubmit }) {

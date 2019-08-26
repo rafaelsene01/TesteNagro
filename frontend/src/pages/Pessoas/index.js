@@ -8,24 +8,29 @@ import api from '~/services/api';
 
 export default function Pessoas() {
   const [pessoas, setPessoas] = useState([]);
-  const [page, setPage] = useState(1);
+  const [_page, set_page] = useState(1);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getPessoas() {
-      const response = await api.get('grower', { params: page });
-      setPessoas(response.data);
+      try {
+        const response = await api.get('grower', { query: _page });
+        setPessoas(response.data);
+      } catch (error) {}
     }
 
     getPessoas();
-  }, [page]);
+  }, [_page]);
 
   async function handleSubmit(name, cpf) {
     setLoading(true);
-    const response = await api.post('grower', { name, cpf });
-    setPessoas(
-      pessoas.length >= 1 ? [response.data, ...pessoas] : [response.data]
-    );
+    try {
+      const response = await api.post('grower', { name, cpf });
+      setPessoas(
+        pessoas.length >= 1 ? [response.data, ...pessoas] : [response.data]
+      );
+    } catch (error) {}
+
     setLoading(false);
   }
 
