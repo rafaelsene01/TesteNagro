@@ -6,7 +6,7 @@ class ImovelController {
     const { _page = 1 } = req.query;
     const { growerId: grower_id } = req.query;
 
-    const imoveis = await Imovel.findAll({
+    const { count, rows: imoveis } = await Imovel.findAndCountAll({
       where: { grower_id },
       page: _page,
       limit: 20,
@@ -14,7 +14,9 @@ class ImovelController {
       attributes: ['id', 'name', 'city', 'total_area'],
     });
 
-    return res.json(imoveis);
+    const nPages = Math.ceil(count / 20);
+
+    return res.json({ nPages, imoveis });
   }
 
   async store(req, res) {

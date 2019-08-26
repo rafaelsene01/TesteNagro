@@ -8,7 +8,7 @@ class Imovel extends Model {
         city: Sequelize.STRING,
         total_area: Sequelize.NUMBER,
       },
-      { sequelize, modelName: 'imoveis' }
+      { sequelize, tableName: 'imoveis' }
     );
 
     return this;

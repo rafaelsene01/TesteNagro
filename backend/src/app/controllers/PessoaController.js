@@ -3,14 +3,18 @@ import Pessoa from '../models/Pessoa';
 
 class PessoaController {
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const { _page = 1 } = req.query;
 
-    const pessoas = await Pessoa.findAll({
+    const { count, rows: pessoas } = await Pessoa.findAndCountAll({
+      page: _page,
       limit: 20,
-      offset: (page - 1) * 20,
+      offset: (_page - 1) * 20,
       attributes: ['id', 'name', 'cpf'],
     });
-    return res.json(pessoas);
+
+    const nPages = Math.ceil(count / 20);
+
+    return res.json({ nPages, pessoas });
   }
 
   async store(req, res) {
