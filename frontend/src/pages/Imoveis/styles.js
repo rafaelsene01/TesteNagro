@@ -23,23 +23,14 @@ export const List = styled(PerfectScrollbar)`
     background: rgba(0, 0, 0, 0.1);
 
     border-radius: 4px;
-    a {
+
+    div {
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      flex: 1;
 
-      text-decoration: none;
-      color: #222;
-
-      div {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-
-        background: none;
-      }
+      background: none;
     }
   }
 `;

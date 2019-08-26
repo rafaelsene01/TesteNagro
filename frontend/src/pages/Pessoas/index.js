@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import Add from './Add';
-import ListPessoa from './ListPessoa';
+import ListPessoas from './ListPessoas';
 
 import { Container, List } from './styles';
 
@@ -22,10 +21,12 @@ export default function Pessoas() {
   }, [page]);
 
   async function handleSubmit(name, cpf) {
+    setLoading(true);
     const response = await api.post('grower', { name, cpf });
     setPessoas(
       pessoas.length >= 1 ? [response.data, ...pessoas] : [response.data]
     );
+    setLoading(false);
   }
 
   async function handleDelete(id) {
@@ -44,7 +45,7 @@ export default function Pessoas() {
       <Add loading={loading} handleSubmit={handleSubmit} />
       <List>
         {pessoas.map(pessoa => (
-          <ListPessoa
+          <ListPessoas
             key={pessoa.cpf}
             pessoa={pessoa}
             onDelete={() => handleDelete(pessoa.id)}
