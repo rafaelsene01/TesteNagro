@@ -33,6 +33,18 @@ class PessoaController {
 
     return res.json({ id, name, cpf });
   }
+
+  async delete(req, res) {
+    const pessoa = await Pessoa.findByPk(req.params.id);
+
+    if (!pessoa) {
+      return res.status(400).json({ error: 'Pessoa already exists.' });
+    }
+
+    pessoa.destroy();
+
+    return res.status(204).json();
+  }
 }
 
 export default new PessoaController();

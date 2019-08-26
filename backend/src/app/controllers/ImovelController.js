@@ -44,6 +44,18 @@ class ImovelController {
 
     return res.json({ id, name, city, total_area, growerId });
   }
+
+  async delete(req, res) {
+    const imovel = await Imovel.findByPk(req.params.id);
+
+    if (!imovel) {
+      return res.status(400).json({ error: 'Imovel already exists.' });
+    }
+
+    imovel.destroy();
+
+    return res.status(204).json();
+  }
 }
 
 export default new ImovelController();

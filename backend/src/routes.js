@@ -7,8 +7,10 @@ const routes = new Router();
 
 routes.get('/grower', PessoaController.index);
 routes.post('/grower', PessoaController.store);
+routes.delete('/grower/:id', PessoaController.delete);
 
 routes.get('/properties', ImovelController.index);
 routes.post('/properties', ImovelController.store);
+routes.delete('/properties/:id', ImovelController.delete);
 
 export default routes;
