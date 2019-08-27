@@ -1,27 +1,33 @@
 import React, { useState } from 'react';
 
-import { Link } from 'react-router-dom';
-
-import FormPessoa from '~/components/FormPessoa';
+import FormImovel from '~/components/FormImovel';
 
 import { Container } from './styles';
 
-export default function ListPessoa({
-  pessoa,
+export default function ListImoveis({
+  imovel,
   onDelete,
   loading,
   handleSubmit,
   buttonText,
 }) {
   const [editar, setEditar] = useState(false);
+
+  async function update(data) {
+    try {
+      await handleSubmit(data);
+      setEditar(false);
+    } catch (error) {}
+  }
+
   return (
     <Container>
       {editar ? (
         <>
-          <FormPessoa
+          <FormImovel
             loading={loading}
-            pessoa={pessoa}
-            handleSubmit={e => handleSubmit({ id: pessoa.id, ...e })}
+            imovel={imovel}
+            handleSubmit={e => update({ id: imovel.id, ...e })}
             buttonText={buttonText}
           />
           <button type="button" onClick={() => setEditar(!editar)}>
@@ -30,12 +36,11 @@ export default function ListPessoa({
         </>
       ) : (
         <>
-          <Link to={{ pathname: `/${pessoa.id}` }}>
-            <div>
-              <strong>{pessoa.name}</strong>
-              <span>{pessoa.cpf}</span>
-            </div>
-          </Link>
+          <div>
+            <strong>Name: {imovel.name}</strong>
+            <span>city: {imovel.city}</span>
+            <span>total_area: {imovel.total_area}</span>
+          </div>
 
           <button
             style={{ backgroundColor: '#555' }}

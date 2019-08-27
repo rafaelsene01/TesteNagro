@@ -74,7 +74,6 @@ export const ContainerForm = styled.div`
   }
 
   button {
-    background: #3b9eff;
     border: 0;
     border-radius: 4px;
     height: 44px;

@@ -58,6 +58,41 @@ class ImovelController {
 
     return res.status(204).json();
   }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      city: Yup.string().required(),
+      total_area: Yup.number().required(),
+      growerId: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const imovel = await Imovel.findByPk(req.params.id);
+
+    const { growerId: grower_id } = req.body;
+    console.log({ ...req.body, growerId: Number(grower_id) });
+    await imovel.update({ ...req.body, growerId: Number(grower_id) });
+
+    const {
+      id,
+      name,
+      city,
+      total_area,
+      grower_id: growerId,
+    } = await Imovel.findByPk(req.params.id);
+
+    return res.json({
+      id,
+      name,
+      city,
+      total_area,
+      growerId,
+    });
+  }
 }
 
 export default new ImovelController();

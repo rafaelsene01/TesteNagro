@@ -12,6 +12,7 @@ routes.delete('/grower/:id', PessoaController.delete);
 
 routes.get('/properties', ImovelController.index);
 routes.post('/properties', ImovelController.store);
+routes.put('/properties/:id', ImovelController.update);
 routes.delete('/properties/:id', ImovelController.delete);
 
 export default routes;

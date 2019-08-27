@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import FormPessoa from '~/components/FormPessoa';
 
-import ListPessoas from './ListPessoas';
+import FormPessoa from '~/components/FormPessoa';
+import ListPessoas from '~/components/List/Pessoas';
 import NumberPages from '~/components/NumberPages';
 
 import { Container, List, ContainerForm } from './styles';
@@ -92,7 +92,7 @@ export default function Pessoas() {
       <List>
         {pessoas.map(pessoa => (
           <ListPessoas
-            key={pessoa.cpf}
+            key={pessoa.id}
             pessoa={pessoa}
             onDelete={() => handleDelete(pessoa.id)}
             loading={loadingUpdate}

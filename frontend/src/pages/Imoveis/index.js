@@ -3,24 +3,25 @@ import NumberPages from '~/components/NumberPages';
 
 import api from '~/services/api';
 
-import Add from './Add';
-import ListPessoa from './ListImoveis';
+import FormImovel from '~/components/FormImovel';
+import ListImoveis from '~/components/List/Imoveis';
 
-import { Container, List } from './styles';
+import { Container, List, ContainerForm } from './styles';
 
 export default function Imoveis({ location }) {
   const [imoveis, setImoveis] = useState([]);
   const [_page, set_page] = useState(1);
   const [nPages, setNPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
 
-  const [, id] = location.pathname.split('/');
+  const [, growerId] = location.pathname.split('/');
 
   useEffect(() => {
     async function getImoveis() {
       try {
         const response = await api.get('properties', {
-          params: { growerId: id, _page },
+          params: { growerId, _page },
         });
         setImoveis(response.data.imoveis);
         setNPages(response.data.nPages);
@@ -28,29 +29,13 @@ export default function Imoveis({ location }) {
     }
 
     getImoveis();
-  }, [_page, id]);
-
-  async function handleSubmit(name, city, total_area) {
-    setLoading(true);
-    try {
-      const response = await api.post('properties', {
-        name,
-        city,
-        total_area,
-        growerId: id,
-      });
-      setImoveis(
-        imoveis.length >= 1 ? [response.data, ...imoveis] : [response.data]
-      );
-    } catch (error) {}
-    setLoading(false);
-  }
+  }, [_page, growerId]);
 
   async function handleDelete(id) {
     try {
       await api.delete(`properties/${id}`);
-      const data = imoveis.filter(pessoa => {
-        return pessoa.id !== id;
+      const data = imoveis.filter(imovel => {
+        return imovel.id !== id;
       });
 
       setImoveis(data);
@@ -68,9 +53,52 @@ export default function Imoveis({ location }) {
     }
   }
 
+  async function handleSubmitAdd({ name, city, total_area }) {
+    setLoadingAdd(true);
+
+    try {
+      const response = await api.post('properties', {
+        name,
+        city,
+        total_area,
+        growerId,
+      });
+      setImoveis(
+        imoveis.length >= 1 ? [response.data, ...imoveis] : [response.data]
+      );
+    } catch (error) {}
+
+    setLoadingAdd(false);
+  }
+
+  async function handleSubmitUpdate({ id, name, city, total_area }) {
+    setLoadingUpdate(true);
+    try {
+      const response = await api.put(`properties/${id}`, {
+        name,
+        city,
+        total_area,
+        growerId,
+      });
+      const data = imoveis.map(imovel =>
+        imovel.id === id ? response.data : imovel
+      );
+
+      setImoveis(data);
+    } catch (error) {}
+
+    setLoadingUpdate(false);
+  }
+
   return (
     <Container>
-      <Add loading={loading} handleSubmit={handleSubmit} />
+      <ContainerForm>
+        <FormImovel
+          loading={loadingAdd}
+          handleSubmit={handleSubmitAdd}
+          buttonText="Criar"
+        />
+      </ContainerForm>
       <NumberPages
         page={_page}
         handlePrev={handlePrev}
@@ -78,10 +106,13 @@ export default function Imoveis({ location }) {
       />
       <List>
         {imoveis.map(imovel => (
-          <ListPessoa
+          <ListImoveis
             key={imovel.id}
             imovel={imovel}
             onDelete={() => handleDelete(imovel.id)}
+            loading={loadingUpdate}
+            handleSubmit={e => handleSubmitUpdate({ ...e })}
+            buttonText="Salvar"
           />
         ))}
       </List>
