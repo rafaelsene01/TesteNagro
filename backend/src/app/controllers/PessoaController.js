@@ -47,7 +47,7 @@ class PessoaController {
 
     const { id, name, cpf } = await Pessoa.create(req.body);
 
-    await Cache.invalidatePrefix('pessoas');
+    Cache.invalidatePrefix('pessoas');
 
     return res.json({ id, name, cpf });
   }
@@ -61,7 +61,7 @@ class PessoaController {
 
     pessoa.destroy();
 
-    await Cache.invalidatePrefix('pessoas');
+    Cache.invalidatePrefix('pessoas');
 
     return res.status(204).json();
   }
