@@ -1,9 +1,19 @@
 import * as Yup from 'yup';
 import Pessoa from '../models/Pessoa';
 
+import Cache from '../../lib/Cache';
+
 class PessoaController {
   async index(req, res) {
     const { _page = 1 } = req.query;
+
+    const cacheKey = `pessoas:page:${_page}`;
+
+    const cached = await Cache.get(cacheKey);
+
+    if (cached) {
+      return res.json(cached);
+    }
 
     const { count, rows: pessoas } = await Pessoa.findAndCountAll({
       page: _page,
@@ -13,6 +23,8 @@ class PessoaController {
     });
 
     const nPages = Math.ceil(count / 20);
+
+    await Cache.set(cacheKey, { nPages, pessoas });
 
     return res.json({ nPages, pessoas });
   }
@@ -35,6 +47,8 @@ class PessoaController {
 
     const { id, name, cpf } = await Pessoa.create(req.body);
 
+    await Cache.invalidatePrefix('pessoas');
+
     return res.json({ id, name, cpf });
   }
 
@@ -46,6 +60,8 @@ class PessoaController {
     }
 
     pessoa.destroy();
+
+    await Cache.invalidatePrefix('pessoas');
 
     return res.status(204).json();
   }
