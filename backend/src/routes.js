@@ -7,6 +7,7 @@ const routes = new Router();
 
 routes.get('/grower', PessoaController.index);
 routes.post('/grower', PessoaController.store);
+routes.put('/grower/:id', PessoaController.update);
 routes.delete('/grower/:id', PessoaController.delete);
 
 routes.get('/properties', ImovelController.index);

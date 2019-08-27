@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Add from './Add';
+import FormPessoa from '~/components/FormPessoa';
+
 import ListPessoas from './ListPessoas';
 import NumberPages from '~/components/NumberPages';
 
-import { Container, List } from './styles';
+import { Container, List, ContainerForm } from './styles';
 
 import api from '~/services/api';
 
@@ -11,7 +12,8 @@ export default function Pessoas() {
   const [pessoas, setPessoas] = useState([]);
   const [_page, set_page] = useState(1);
   const [nPages, setNPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   useEffect(() => {
     async function getPessoas() {
@@ -25,8 +27,9 @@ export default function Pessoas() {
     getPessoas();
   }, [_page]);
 
-  async function handleSubmit(name, cpf) {
-    setLoading(true);
+  async function handleSubmitAdd({ name, cpf }) {
+    setLoadingAdd(true);
+
     try {
       const response = await api.post('grower', { name, cpf });
       setPessoas(
@@ -34,7 +37,20 @@ export default function Pessoas() {
       );
     } catch (error) {}
 
-    setLoading(false);
+    setLoadingAdd(false);
+  }
+
+  async function handleSubmitUpdate({ name, cpf, id }) {
+    setLoadingUpdate(true);
+    try {
+      const response = await api.put(`grower/${id}`, { name, cpf });
+      const data = pessoas.map(pessoa =>
+        pessoa.id === id ? response.data : pessoa
+      );
+      setPessoas(data);
+    } catch (error) {}
+
+    setLoadingUpdate(false);
   }
 
   async function handleDelete(id) {
@@ -61,7 +77,13 @@ export default function Pessoas() {
 
   return (
     <Container>
-      <Add loading={loading} handleSubmit={handleSubmit} />
+      <ContainerForm>
+        <FormPessoa
+          loading={loadingAdd}
+          handleSubmit={handleSubmitAdd}
+          buttonText="Criar"
+        />
+      </ContainerForm>
       <NumberPages
         page={_page}
         handlePrev={handlePrev}
@@ -73,6 +95,9 @@ export default function Pessoas() {
             key={pessoa.cpf}
             pessoa={pessoa}
             onDelete={() => handleDelete(pessoa.id)}
+            loading={loadingUpdate}
+            handleSubmit={e => handleSubmitUpdate({ ...e })}
+            buttonText="Salvar"
           />
         ))}
       </List>

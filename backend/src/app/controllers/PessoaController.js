@@ -49,6 +49,31 @@ class PessoaController {
 
     return res.status(204).json();
   }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      cpf: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const pessoaExists = await Pessoa.findOne({ where: { cpf: req.body.cpf } });
+
+    if (pessoaExists) {
+      return res.status(400).json({ error: 'Pessoa already exists.' });
+    }
+
+    const pessoa = await Pessoa.findByPk(req.params.id);
+
+    await pessoa.update(req.body);
+
+    const { id, name, cpf } = await Pessoa.findByPk(req.params.id);
+
+    return res.json({ id, name, cpf });
+  }
 }
 
 export default new PessoaController();
