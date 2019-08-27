@@ -60,10 +60,14 @@ class PessoaController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const pessoaExists = await Pessoa.findOne({ where: { cpf: req.body.cpf } });
+    const checkPessoa = await Pessoa.findByPk(req.params.id);
 
-    if (pessoaExists) {
-      return res.status(400).json({ error: 'Pessoa already exists.' });
+    if (checkPessoa.cpf !== req.body.cpf) {
+      const cpfExists = await Pessoa.findOne({ where: { cpf: req.body.cpf } });
+
+      if (cpfExists) {
+        return res.status(400).json({ error: 'Pessoa already exists.' });
+      }
     }
 
     const pessoa = await Pessoa.findByPk(req.params.id);
